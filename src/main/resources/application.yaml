@@ -1,0 +1,19 @@
+server:
+  port: 8080
+  tomcat:
+    uri-encoding: UTF-8
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/test
+    username: root
+    password: ss9527160615
+    driver-class-name: com.mysql.jdbc.Driver
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    content-type: text/html
+    cache: false
+    mode: LEGACYHTML5
+
+

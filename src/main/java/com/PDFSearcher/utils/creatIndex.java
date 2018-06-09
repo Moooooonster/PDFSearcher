@@ -89,7 +89,7 @@ public class creatIndex {
             if (fileType != null && !fileType.equals("")) {
                 if (fileType.equals("pdf")) {
                     // 获取pdf文档
-                    PDFParser parser = new PDFParser((InputStream) in);
+                    PDFParser parser = new PDFParser((RandomAccessRead) in);
                     parser.parse();
                     PDDocument pdDocument = parser.getPDDocument();
                     System.out.println("page==" + pdDocument.getNumberOfPages());

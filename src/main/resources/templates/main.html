@@ -1,13 +1,186 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:color="http://www.w3.org/1999/xhtml" xmlns:display="http://www.w3.org/1999/xhtml"
+      xmlns:form="http://www.w3.org/1999/xhtml">
 <head>
     <script src="webjars/jquery/3.1.1/jquery.min.js"></script>
     <script src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="webjars/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <link rel="icon" type="image/x-icon" href="/images/logo2.ico"/>
     <meta charset="UTF-8"/>
-    <title>Searcher</title>
+    <title>百事可喜</title>
 </head>
 <body>
+<style>
+    .center-vertical{
+        position: relative;
+        top: 50%;
+        transform: translateY(150%);
+    }
+    .underlineAndColor{ text-decoration:underline;color:#999999;}
+    .color{color:#999999; text-decoration:none;}
+    .spinner {
+        position: fixed;
+        z-index: 9999999;
+        width: 100%;
+        height: 100%;
+        background-color:#043766 ;
+    }
+    .spinner-logo-vertical{
+        position: relative;
+        top: 0%;
+        transform: translateY(65%);
+    }
+
+    #myCanvas{
+        position: fixed;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+
+    }
+
+</style>
+
+<div id="spinner" class="spinner">
+        <img class="center-block spinner-logo-vertical" src="/images/biglogo3.jpg"/>
+</div>
+<canvas id="myCanvas"></canvas>
+<div class="container center-vertical">
+
+        <div class="row"  >
+        <a href="/index"><img class="center-block" height="120px" width="422px" src="/images/biglogo.jpg" /></a>
+        </div>
+        <br/>
+
+        <div class="row center-block"  >
+            <form method="get" action="/search">
+            <div class="col-md-offset-2 col-md-8 input-group" >
+
+                <input  name="keywords" type="text" class="form-control input-lg" placeholder="pepsi to magazine...."/>
+                <span class="input-group-btn">
+                    <button id="keywords_submit" class="btn btn-info btn-search btn-lg"  type="submit" >百事一下</button>
+                </span>
+
+            </div>
+            </form>
+        </div>
+
+
+</div>
+
+<footer class="footer navbar-fixed-bottom ">
+    <div class="container center-block text-center color" >
+        ©2018&nbsp;百事可喜&nbsp; <a href="https://github.com/Moooooonster/PDFSearcher" class="underlineAndColor">view source code</a>
+    </div>
+</footer>
 
 </body>
+
+<script>
+    $(function() {
+        $('#spinner').fadeOut(4000);
+    })
+
+</script>
+<script type="text/javascript">
+    //获取窗口宽高
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    //设置画布宽高与窗口宽高一样
+    canvas.width = w;
+    canvas.height = h;
+    //随机数函数
+    function fnRandom(min,max){
+        return parseInt((max-min)*Math.random()+min+1)
+    }
+    function Round(){
+        this.r = fnRandom(2,5);
+        this.diam = this.r*2;
+//随机位置
+        var x = fnRandom(0,canvas.width - this.r);
+        this.x = x<this.r?this.r:x;
+        var y = fnRandom(0,canvas.height-this.r);
+        this.y = y<this.r?this.r:y
+//随机速度
+        var speed = fnRandom(2,4)/10
+        this.speedX = fnRandom(0,4)>2?speed:-speed;
+        this.speedY = fnRandom(0,4)>2?speed:-speed;
+//颜色
+        this.color = "gray";
+    }
+    Round.prototype.draw = function(){
+//绘制函数
+        ctx.fillStyle = this.color;
+        ctx.beginPath()
+        ctx.arc(this.x,this.y,this.r,0,Math.PI*2,true);
+        ctx.closePath();
+        ctx.fill();
+    }
+    Round.prototype.move = function(){
+        this.x+=this.speedX;
+        if(this.x>canvas.width-this.r){
+// this.speedX*=-1;
+            this.x=this.r
+        }else if(this.x<this.r){
+            this.x=canvas.width-this.r
+        }
+        this.y+=this.speedY;
+        if(this.y>canvas.height-this.r){
+// this.speedY*=-1;
+            this.y=this.r
+        }else if(this.y<this.r){
+            this.y=canvas.height-this.r
+        }
+    }
+    //使用Round
+    var allRound = [];
+    function initRound(){
+//初始化30个圆形对象,放到数组中
+        for(var i = 0 ; i<30;i++){
+            var obj = new Round();
+            obj.draw();
+            obj.move();
+            allRound.push(obj);
+
+        }
+    }
+    initRound();
+    var dxdy = []
+    function roundMove(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+//遍历所有的圆形对象,让对象自己重绘,移动
+        for (var i = 0 ;i <allRound.length;i++) {
+            var round = allRound[i];
+            round.draw();
+            round.move();
+            dxdy[i]={
+                dx:round.x,
+                dy:round.y
+            };
+            var dx = dxdy[i].dx;
+            var dy =dxdy[i].dy;
+            for (var j=0;j<i;j++) {
+                var sx = dxdy[j].dx;
+                var sy = dxdy[j].dy;
+                l = Math.sqrt((dx-sx)*(dx-sx)+(dy-sy)*(dy-sy));
+                var C = 1/l*7-0.009;
+                var o = C > 0.03 ? 0.03 : C;
+                ctx.strokeStyle = 'rgba(0,0,0,'+ o +')'
+                console.log(l);
+                ctx.beginPath()
+                ctx.lineWidth=2;
+                ctx.moveTo(dxdy[i].dx,dxdy[i].dy)
+                ctx.lineTo(dxdy[j].dx,dxdy[j].dy);
+                ctx.closePath()
+                ctx.stroke()
+
+            }
+        }
+        window.requestAnimationFrame(roundMove)
+    }
+    roundMove();
+</script>
+
 </html>
