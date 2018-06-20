@@ -1,18 +1,164 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:color="http://www.w3.org/1999/xhtml" xmlns:display="http://www.w3.org/1999/xhtml"
+      xmlns:form="http://www.w3.org/1999/xhtml">
 <head>
     <script src="webjars/jquery/3.1.1/jquery.min.js"></script>
     <script src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/page.js"></script>
+
     <link rel="stylesheet" href="webjars/bootstrap/3.3.5/css/bootstrap.min.css" />
     <link rel="icon" type="image/x-icon" href="/images/logo2.ico">
-    <meta charset="UTF-8"/>
-    <title>searchResult</title>
-</head>
-<body>
+    <link href="/css/page.css" type="text/css" rel="stylesheet"/>
 
+
+
+
+    <meta charset="UTF-8"/>
+    <title th:text="${title}">searchResult</title>
+</head>
+<style>
+    #myCanvas{
+        position: fixed;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+    }
+    .col-center-block {
+        float: none;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .in{
+        width: 100%;
+    }
+</style>
+
+<body>
+<canvas id="myCanvas"></canvas>
+<div class="container">
+    <div class="row">
+        <br/><br/>
+        <form method="get" class="form-inline " action="/search">
+            <div class="col-center-block col-md-offset-2 col-lg-8">
+                <div class="input-group in" >
+
+                    <input  name="keywords" type="text" class="form-control input-lg" placeholder="pepsi to PDF...." value="" th:value="${keywords}" />
+
+                    <span class="input-group-btn">
+                        <button id="keywords_submit" class="btn btn-info btn-search btn-lg"  type="submit" >百事一下</button>
+                    </span>
+
+                </div>
+
+            </div>
+            <div class="col-center-block col-md-offset-2 col-lg-8">
+
+                <h5 class="center-block">搜索时间为:<span th:text="${searchTime}"></span> 毫秒，共:<span th:text="${resultNum}"></span> 条</h5>
+            </div>
+        </form>
+        <br/>
+        <div class="row">
+
+            <div class="col-center-block col-md-offset-2 col-lg-8" th:each="SearchResult:${results}">
+                <table>
+                    <!--pdf标题-->
+                    <tr>
+                        <a  style="font-size:19px;"th:utext="${SearchResult.name}" th:href="@{/pdf/{orderId}(orderId=${SearchResult.pdfLink})}" target="_blank">name</a>
+                        <h5 class="center-block" th:if="${SearchResult.author!=''}">作者:<span th:text="${SearchResult.author}">无</span></h5>
+                    </tr>
+                    <!--pdf简介和图片-->
+                    <tr>
+                        <!--简介-->
+                        <th th:utext="${SearchResult.highlightMainContent}">
+                            简介
+                        </th>
+                    </tr>
+                </table>
+                <br/><br/>
+            </div>
+
+
+
+        </div>
+        <div class="row">
+            <div class="col-center-block col-md-offset-2 col-lg-8">
+                <div class="zzsc">
+                    <!--currentpage="1" numbercount="100"-->
+                    <ul class="page" maxshowpageitem="5" pagelistcount="10"  id="page"></ul>
+                    <script th:inline="javascript" type="text/javascript">
+                        var resultNum = [[${resultNum}]];
+                        var cPageNum = [[${pageNum}]];
+                        console.log(resultNum);
+
+                        function tt(dd){
+                            //alert(dd);
+                        }
+                        var GG = {
+                            "kk":function(mm){
+                                // alert(mm);
+                            }
+                        }
+                        console.log(cPageNum)
+                        if (cPageNum!=null){
+                            $("#page").initPage(resultNum ,cPageNum,GG.kk);
+                        } else {
+                            $("#page").initPage(resultNum ,1,GG.kk);
+                        }
+
+
+                        //
+                        $(".pageItem").click(function(){
+                            var page1 = $(this).val();
+                            console.log(page)
+
+                            var temp = document.createElement("form");
+                            temp.action = "/search";
+                            temp.method = "get";
+                            temp.style.display = "none";
+                            var keywords = document.createElement("input");
+                            keywords.type="hidden";
+                            keywords.name= "keywords";
+                            //传入数据，只传递了一个参数内容，实际可传递多个。
+                            keywords.value= [[${keywords}]];
+                            var page = document.createElement("input");
+
+                            page.type="hidden";
+                            //传入参数名,相当于get请求中的content=
+
+                            //传入参数名,相当于get请求中的content=
+                            page.name= "page";
+                            //传入数据，只传递了一个参数内容，实际可传递多个。
+                            page.value= page1;
+                            temp.appendChild(keywords);
+                            temp.appendChild(page);
+                            document.body.appendChild(temp);
+                            temp.submit();
+                            return temp;
+                        })
+
+                    </script>
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+
+
+
+
+
+
+</div>
 
 
 
 
 </body>
+<script type="text/javascript" src="/js/background.js"></script>
 </html>
