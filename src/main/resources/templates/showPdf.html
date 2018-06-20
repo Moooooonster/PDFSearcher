@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:color="http://www.w3.org/1999/xhtml" xmlns:display="http://www.w3.org/1999/xhtml"
+      xmlns:form="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title th:text="${pdfName}">searchResult</title>
+    <meta charset="utf-8" />
+    <script type="text/javascript" src='/js/pdfobject.js'></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo2.ico">
+    <style type="text/css">
+        html,body,#pdf_viewer{
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="pdf_viewer"></div>
+
+</body>
+<script th:inline="javascript" type="text/javascript">
+    if(PDFObject.supportsPDFs){
+        // PDF嵌入到网页
+        var pdfname = [[${pdfName}]];
+        PDFObject.embed("/pdfFiles/"+pdfname, "#pdf_viewer" );
+        console.log("Yay, this browser supports inline PDFs.");
+        console.log(pdfname);
+    } else {
+        location.href = "/canvas";
+        console.log("Boo, inline PDFs are not supported by this browser");
+    }
+</script>
+</html>

@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="commons-logging">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/commons-logging.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/fontbox-2.0.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/pdfbox-2.0.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/pdfbox-debugger-2.0.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/pdfbox-tools-2.0.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/preflight-2.0.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/xmpbox-2.0.8.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
